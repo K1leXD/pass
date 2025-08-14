@@ -1,0 +1,19 @@
+name: Update Password
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Каждый день в 00:00 UTC
+  workflow_dispatch:      # Можно запускать вручную
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Gist
+        env:
+          GIST_ID: "71260671daac59f9043b964e6cc83976"  # Например: abc123 из URL
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_PASS="NewPassword_$(date +%d%m%Y)"
+          curl -X PATCH -H "Authorization: token $GH_TOKEN" \
+            -d '{"files":{"password.txt":{"content":"'$NEW_PASS'"}}}' \
+            "https://api.github.com/gists/$GIST_ID"
